@@ -362,9 +362,11 @@
 
                         <!-- Action Buttons & Interactive Mascot -->
                         <div class="hero-actions">
-                            <div class="mascot-container" title="Klick mich!">
+                            <div class="mascot-container" role="button" tabindex="0"
+                                aria-label="Klick mich – Kero spricht" title="Klick mich!">
                                 <div class="speech-bubble">Quak! Schön, dass du da bist! 🐸</div>
-                                <img src="images/kerostehend.webp" alt="Kero das Frosch Maskottchen" class="mascot-img">
+                                <img src="images/kerostehend-natural-smile.png" alt="Kero das Frosch Maskottchen" class="mascot-img">
+                                <span class="mascot-click-hint" aria-hidden="true">Click mich!</span>
                             </div>
 
                             <a href="https://www.etermin.net/keramiikero" target="_blank" rel="noopener noreferrer"
@@ -372,8 +374,8 @@
                                 Jetzt Termin buchen
                             </a>
 
-                            <a href="kreativmarkt-throwback.html" class="btn-secondary">
-                                Kreativmarkt throwback
+                            <a href="galerie.html#kreativmarkt" class="btn-secondary">
+                                Galerie
                             </a>
                         </div>
                     </div>
@@ -489,7 +491,7 @@
 
         <!-- Smooth Wave Divider -->
         <svg class="wave-divider" viewBox="0 0 1200 80" preserveAspectRatio="none" aria-hidden="true">
-            <path d="M0,32 C48,18 112,12 205,36 C360,76 530,62 690,34 C850,6 1040,70 1200,34 V80 H0 Z" fill="#f7f3ee">
+            <path d="M0,32 C48,18 112,12 205,36 C360,76 530,62 690,34 C850,6 1040,70 1200,34 V80 H0 Z" fill="#eef9f5">
             </path>
         </svg>
 
@@ -497,6 +499,19 @@
         <!-- TOPIC PREVIEWS GRID ("THEMEN ENTDECKEN")                      -->
         <!-- ============================================================= -->
         <section class="previews-section">
+            <div class="previews-decoration" aria-hidden="true">
+                <svg class="preview-decor-item preview-flower preview-decor-left-one" viewBox="0 0 40 40">
+                    <g fill="#f472b6"><ellipse cx="28" cy="20" rx="7" ry="5"/><ellipse cx="22.5" cy="27.6" rx="7" ry="5" transform="rotate(72 22.5 27.6)"/><ellipse cx="13.5" cy="24.7" rx="7" ry="5" transform="rotate(144 13.5 24.7)"/><ellipse cx="13.5" cy="15.3" rx="7" ry="5" transform="rotate(216 13.5 15.3)"/><ellipse cx="22.5" cy="12.4" rx="7" ry="5" transform="rotate(288 22.5 12.4)"/></g><circle cx="20" cy="20" r="5" fill="#facc15"/>
+                </svg>
+                <div class="preview-decor-item preview-lily preview-decor-left-two">
+                    <svg viewBox="0 0 60 60"><path d="M30 30 52 16A25 25 0 1 0 52 44Z" fill="#8ec286"/><path d="M30 30 48 19A21 21 0 1 0 48 41Z" fill="#a7d3a0"/><circle cx="24" cy="28" r="5" fill="#ffd6e3"/><circle cx="24" cy="28" r="2" fill="#fbbf24"/></svg>
+                </div>
+                <svg class="preview-decor-item preview-butterfly preview-decor-left-three" viewBox="0 0 40 40"><ellipse cx="14" cy="16" rx="10" ry="8" fill="#34d399" opacity=".72"/><ellipse cx="26" cy="16" rx="10" ry="8" fill="#6ee7b7" opacity=".72"/><ellipse cx="15" cy="26" rx="7" ry="6" fill="#6ee7b7" opacity=".62"/><ellipse cx="25" cy="26" rx="7" ry="6" fill="#34d399" opacity=".62"/><path d="M20 9v23" stroke="#059669" stroke-width="1.5"/></svg>
+                <svg class="preview-decor-item preview-flower preview-decor-right-one" viewBox="0 0 40 40"><g fill="#7dd3fc"><ellipse cx="28" cy="20" rx="7" ry="5"/><ellipse cx="22.5" cy="27.6" rx="7" ry="5" transform="rotate(72 22.5 27.6)"/><ellipse cx="13.5" cy="24.7" rx="7" ry="5" transform="rotate(144 13.5 24.7)"/><ellipse cx="13.5" cy="15.3" rx="7" ry="5" transform="rotate(216 13.5 15.3)"/><ellipse cx="22.5" cy="12.4" rx="7" ry="5" transform="rotate(288 22.5 12.4)"/></g><circle cx="20" cy="20" r="5" fill="#fde047"/></svg>
+                <svg class="preview-decor-item preview-butterfly preview-decor-right-two" viewBox="0 0 40 40"><ellipse cx="14" cy="16" rx="10" ry="8" fill="#a78bfa" opacity=".7"/><ellipse cx="26" cy="16" rx="10" ry="8" fill="#c4b5fd" opacity=".7"/><ellipse cx="15" cy="26" rx="7" ry="6" fill="#c4b5fd" opacity=".6"/><ellipse cx="25" cy="26" rx="7" ry="6" fill="#a78bfa" opacity=".6"/><path d="M20 9v23" stroke="#7c3aed" stroke-width="1.5"/></svg>
+                <svg class="preview-decor-item preview-flower preview-decor-right-three" viewBox="0 0 40 40"><g fill="#fbbf24"><ellipse cx="28" cy="20" rx="7" ry="5"/><ellipse cx="22.5" cy="27.6" rx="7" ry="5" transform="rotate(72 22.5 27.6)"/><ellipse cx="13.5" cy="24.7" rx="7" ry="5" transform="rotate(144 13.5 24.7)"/><ellipse cx="13.5" cy="15.3" rx="7" ry="5" transform="rotate(216 13.5 15.3)"/><ellipse cx="22.5" cy="12.4" rx="7" ry="5" transform="rotate(288 22.5 12.4)"/></g><circle cx="20" cy="20" r="5" fill="#fb7185"/></svg>
+                <span class="preview-spark preview-spark-one"></span><span class="preview-spark preview-spark-two"></span><span class="preview-spark preview-spark-three"></span>
+            </div>
             <div class="previews-container">
                 <div class="section-header-center">
                     <span class="section-tag">Unsere Angebote</span>
@@ -713,7 +728,7 @@
                     <li><a href="kontakt.html#faq">Häufige Fragen (FAQ)</a></li>
                     <li><a href="https://www.etermin.net/keramiikero" target="_blank"
                             rel="noopener noreferrer">Online-Terminbuchung</a></li>
-                    <li><a href="kreativmarkt-throwback.html">Kreativmarkt Throwback</a></li>
+                    <li><a href="galerie.html#kreativmarkt">Galerie</a></li>
                 </ul>
             </div>
         </div>

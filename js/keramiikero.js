@@ -1,6 +1,32 @@
 document.addEventListener('DOMContentLoaded', () => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+    // Galerie and Kreativmarkt throwback share one destination on every page.
+    document.querySelectorAll('.nav-links, .mobile-menu').forEach(menu => {
+        if (menu.querySelector('a[href="galerie.html"]')) return;
+        const shopLink = menu.querySelector('a[href="kuenstler-shop.html"]');
+        if (!shopLink) return;
+        shopLink.insertAdjacentHTML('afterend', `<a href="galerie.html"${location.pathname.endsWith('/galerie.html') ? ' class="active"' : ''}>Galerie</a>`);
+    });
+
+    const ambientDecorationMarkup = `
+        <div class="section-decoration" aria-hidden="true">
+            <svg class="ambient-deco-item ambient-flower ambient-one" viewBox="0 0 40 40" data-depth="0.75"><g fill="#f472b6"><ellipse cx="28" cy="20" rx="7" ry="5"/><ellipse cx="22.47" cy="27.61" rx="7" ry="5" transform="rotate(72 22.47 27.61)"/><ellipse cx="13.53" cy="24.7" rx="7" ry="5" transform="rotate(144 13.53 24.7)"/><ellipse cx="13.53" cy="15.3" rx="7" ry="5" transform="rotate(216 13.53 15.3)"/><ellipse cx="22.47" cy="12.39" rx="7" ry="5" transform="rotate(288 22.47 12.39)"/></g><circle cx="20" cy="20" r="5.5" fill="#facc15"/></svg>
+            <svg class="ambient-deco-item ambient-butterfly ambient-two" viewBox="0 0 40 40" data-depth="-0.55"><ellipse cx="14" cy="16" rx="10" ry="8" fill="#34d399" opacity=".76"/><ellipse cx="26" cy="16" rx="10" ry="8" fill="#6ee7b7" opacity=".76"/><ellipse cx="15" cy="26" rx="7" ry="6" fill="#6ee7b7" opacity=".68"/><ellipse cx="25" cy="26" rx="7" ry="6" fill="#34d399" opacity=".68"/><path d="M20 9v23" stroke="#059669" stroke-width="1.5"/></svg>
+            <div class="ambient-deco-item ambient-lily ambient-three" data-depth="0.45"><svg viewBox="0 0 60 60"><path d="M30 30 52 16A25 25 0 1 0 52 44Z" fill="#8ec286"/><g fill="#ffd6e3"><ellipse cx="30" cy="18" rx="6" ry="12"/><ellipse cx="39" cy="27" rx="6" ry="12" transform="rotate(60 39 27)"/><ellipse cx="21" cy="27" rx="6" ry="12" transform="rotate(-60 21 27)"/></g><circle cx="30" cy="29" r="5" fill="#fbbf24"/></svg></div>
+            <svg class="ambient-deco-item ambient-flower ambient-four" viewBox="0 0 40 40" data-depth="-0.7"><g fill="#93c5fd"><ellipse cx="28" cy="20" rx="7" ry="5"/><ellipse cx="22.47" cy="27.61" rx="7" ry="5" transform="rotate(72 22.47 27.61)"/><ellipse cx="13.53" cy="24.7" rx="7" ry="5" transform="rotate(144 13.53 24.7)"/><ellipse cx="13.53" cy="15.3" rx="7" ry="5" transform="rotate(216 13.53 15.3)"/><ellipse cx="22.47" cy="12.39" rx="7" ry="5" transform="rotate(288 22.47 12.39)"/></g><circle cx="20" cy="20" r="5.5" fill="#fde047"/></svg>
+            <span class="ambient-deco-item ambient-spark ambient-five" data-depth="0.9"></span>
+            <span class="ambient-deco-item ambient-spark ambient-six" data-depth="-0.8"></span>
+        </div>`;
+
+    // Carry the hero's floating garden through every content section.
+    document.querySelectorAll('main > section:not(.hero):not(.subpage-hero)').forEach(section => {
+        section.classList.add('ambient-section');
+        if (!section.querySelector(':scope > .section-decoration')) {
+            section.insertAdjacentHTML('afterbegin', ambientDecorationMarkup);
+        }
+    });
+
     // Reuse the homepage's playful pond decorations on every inner-page hero.
     // Keeping this in one shared template prevents the pages from drifting apart.
     const subpageHero = document.querySelector('.subpage-hero');
@@ -17,9 +43,62 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>`);
     }
 
+    // Use one layered, translucent pond-wave transition between sections.
+    document.querySelectorAll('.wave-divider, .hero-pond-wave').forEach((wave, index) => {
+        const gradientId = `pond-melt-${index}`;
+        const fadeId = `pond-fade-${index}`;
+        const fadeGradientId = `pond-fade-gradient-${index}`;
+        wave.setAttribute('viewBox', '0 0 1200 80');
+        wave.innerHTML = `
+            <defs>
+                <linearGradient id="${gradientId}" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#dff7ef" stop-opacity="0.12" />
+                    <stop offset="42%" stop-color="#cfeee8" stop-opacity="0.5" />
+                    <stop offset="100%" stop-color="#dceff5" stop-opacity="0.42" />
+                </linearGradient>
+                <linearGradient id="${fadeGradientId}" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="white" />
+                    <stop offset="68%" stop-color="white" stop-opacity="0.94" />
+                    <stop offset="100%" stop-color="white" stop-opacity="0" />
+                </linearGradient>
+                <mask id="${fadeId}"><rect width="1200" height="80" fill="url(#${fadeGradientId})" /></mask>
+            </defs>
+            <g mask="url(#${fadeId})">
+                <path class="pond-wave-haze" d="M0 12 C105 0 185 25 300 17 C420 8 485 1 610 18 C735 35 825 4 930 15 C1040 27 1115 7 1200 13 V80 H0Z" fill="url(#${gradientId})" />
+                <path class="pond-wave-back" d="M0 31 C95 15 180 42 292 30 C405 18 500 14 615 34 C730 54 820 20 930 29 C1035 38 1110 22 1200 27 V80 H0Z" fill="#bfe7df" fill-opacity="0.38" />
+                <path class="pond-wave-front" d="M0 48 C92 31 192 59 310 45 C425 31 510 29 625 49 C745 69 830 36 945 43 C1055 50 1122 38 1200 41 V80 H0Z" fill="#cfeaf3" fill-opacity="0.32" />
+                <ellipse cx="92" cy="53" rx="16" ry="5.5" fill="#8ec286" fill-opacity="0.42" />
+                <ellipse cx="958" cy="48" rx="11" ry="4" fill="#8ec286" fill-opacity="0.34" />
+            </g>
+            <path d="M0 31 C95 15 180 42 292 30 C405 18 500 14 615 34 C730 54 820 20 930 29 C1035 38 1110 22 1200 27" fill="none" stroke="#9fd6cc" stroke-opacity="0.34" stroke-width="1.5" />
+            <path d="M0 48 C92 31 192 59 310 45 C425 31 510 29 625 49 C745 69 830 36 945 43 C1055 50 1122 38 1200 41" fill="none" stroke="#a9d9e8" stroke-opacity="0.38" stroke-width="1.5" />`;
+    });
+
     // Keep one shared footer structure and verified destinations on every page.
     const footer = document.querySelector('footer');
     if (footer) {
+        if (!footer.previousElementSibling?.classList.contains('footer-pond-transition')) {
+            footer.insertAdjacentHTML('beforebegin', `
+                <div class="footer-pond-transition" aria-hidden="true">
+                    <svg class="footer-wave" viewBox="0 0 1200 100" preserveAspectRatio="none">
+                        <defs>
+                            <linearGradient id="footer-wave-gradient" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#527d72" stop-opacity="0" />
+                                <stop offset="48%" stop-color="#527d72" stop-opacity="0.48" />
+                                <stop offset="100%" stop-color="#527d72" />
+                            </linearGradient>
+                        </defs>
+                        <path d="M0 34 C95 8 180 49 295 27 C410 5 500 20 615 42 C730 64 820 12 935 30 C1045 47 1125 15 1200 28 V100 H0Z" fill="url(#footer-wave-gradient)" />
+                        <path d="M0 62 C105 37 195 76 315 55 C430 35 525 43 640 66 C755 89 845 46 955 58 C1065 70 1130 49 1200 53 V100 H0Z" fill="#527d72" fill-opacity="0.58" />
+                        <path d="M0 34 C95 8 180 49 295 27 C410 5 500 20 615 42 C730 64 820 12 935 30 C1045 47 1125 15 1200 28" fill="none" stroke="#79a99d" stroke-opacity="0.38" stroke-width="1.6" />
+                    </svg>
+                    <div class="footer-pond-decoration">
+                        <div class="pond-lily pond-lily-left"><svg viewBox="0 0 60 60"><path d="M30 30 52 16A25 25 0 1 0 52 44Z" fill="#8ec286"/><g fill="#ffd6e3"><ellipse cx="30" cy="18" rx="6" ry="12"/><ellipse cx="39" cy="27" rx="6" ry="12" transform="rotate(60 39 27)"/><ellipse cx="21" cy="27" rx="6" ry="12" transform="rotate(-60 21 27)"/></g><circle cx="30" cy="29" r="5" fill="#fbbf24"/></svg></div>
+                        <svg class="pond-flower" viewBox="0 0 40 40"><g fill="#f9a8d4"><ellipse cx="28" cy="20" rx="7" ry="5"/><ellipse cx="22.47" cy="27.61" rx="7" ry="5" transform="rotate(72 22.47 27.61)"/><ellipse cx="13.53" cy="24.7" rx="7" ry="5" transform="rotate(144 13.53 24.7)"/><ellipse cx="13.53" cy="15.3" rx="7" ry="5" transform="rotate(216 13.53 15.3)"/><ellipse cx="22.47" cy="12.39" rx="7" ry="5" transform="rotate(288 22.47 12.39)"/></g><circle cx="20" cy="20" r="5.5" fill="#facc15"/></svg>
+                        <div class="pond-lily pond-lily-right"><svg viewBox="0 0 60 60"><path d="M30 30 52 16A25 25 0 1 0 52 44Z" fill="#7fb978"/><circle cx="26" cy="28" r="4" fill="#fde68a"/></svg></div>
+                    </div>
+                </div>`);
+        }
         footer.innerHTML = `
             <div class="footer-container">
                 <div class="footer-brand">
@@ -28,12 +107,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="footer-social" aria-label="KeramiiKero im Netz">
                         <a href="https://www.instagram.com/keramiikero" target="_blank" rel="noopener noreferrer" class="social-icon-btn" aria-label="KeramiiKero auf Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="20" height="20" x="2" y="2" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none"></circle></svg></a>
                         <a href="https://www.facebook.com/keramiikero" target="_blank" rel="noopener noreferrer" class="social-icon-btn" aria-label="KeramiiKero auf Facebook"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 8h3V4h-3c-3.3 0-5 2-5 5v2H6v4h3v7h4v-7h3.2l.8-4h-4V9c0-.7.3-1 1-1Z"></path></svg></a>
+                        <a href="https://www.youtube.com/@keramiikero" target="_blank" rel="noopener noreferrer" class="social-icon-btn" aria-label="KeramiiKero auf YouTube"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.3 7.2a2.8 2.8 0 0 0-2-2C17.6 4.7 12 4.7 12 4.7s-5.6 0-7.3.5a2.8 2.8 0 0 0-2 2A29 29 0 0 0 2.2 12a29 29 0 0 0 .5 4.8 2.8 2.8 0 0 0 2 2c1.7.5 7.3.5 7.3.5s5.6 0 7.3-.5a2.8 2.8 0 0 0 2-2 29 29 0 0 0 .5-4.8 29 29 0 0 0-.5-4.8Z"></path><path d="m10 15.2 5-3.2-5-3.2Z" fill="currentColor" stroke="none"></path></svg></a>
                         <a href="mailto:info@keramiikero.de" class="social-icon-btn" aria-label="E-Mail an KeramiiKero"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="3"></rect><path d="m3 6 9 7 9-7"></path></svg></a>
                     </div>
                 </div>
-                <div class="footer-col"><h4>Seiten</h4><ul><li><a href="index.html">Home</a></li><li><a href="angebote-preise.html">Angebote & Preise</a></li><li><a href="ablauf-techniken.html">Ablauf & Techniken</a></li><li><a href="toepferwerkstatt.html">Töpferwerkstatt</a></li><li><a href="workshops-events.html">Workshops & Events</a></li><li><a href="kuenstler-shop.html">Künstler-Shop</a></li></ul></div>
+                <div class="footer-col"><h4>Seiten</h4><ul><li><a href="index.html">Home</a></li><li><a href="angebote-preise.html">Angebote & Preise</a></li><li><a href="ablauf-techniken.html">Ablauf & Techniken</a></li><li><a href="toepferwerkstatt.html">Töpferwerkstatt</a></li><li><a href="workshops-events.html">Workshops & Events</a></li><li><a href="kuenstler-shop.html">Künstler-Shop</a></li><li><a href="galerie.html">Galerie</a></li></ul></div>
                 <div class="footer-col"><h4>Öffnungszeiten</h4><ul><li><strong>Mi – Fr:</strong> 14:00 – 18:00 Uhr</li><li><strong>Sa & So:</strong> 10:00 – 17:00 Uhr</li><li><em>Wochenende: ohne Termin möglich</em></li><li><strong>Töpferwerkstatt:</strong> 24/7 per Nuki Zugang</li></ul></div>
-                <div class="footer-col"><h4>Kontakt & Info</h4><ul><li><a href="kontakt.html">Anfahrt & Studio</a></li><li><a href="kontakt.html#faq">Häufige Fragen (FAQ)</a></li><li><a href="https://www.etermin.net/keramiikero" target="_blank" rel="noopener noreferrer">Online-Terminbuchung</a></li><li><a href="kreativmarkt-throwback.html">Kreativmarkt Throwback</a></li></ul></div>
+                <div class="footer-col"><h4>Kontakt & Info</h4><ul><li><a href="kontakt.html">Anfahrt & Studio</a></li><li><a href="kontakt.html#faq">Häufige Fragen (FAQ)</a></li><li><a href="https://www.etermin.net/keramiikero" target="_blank" rel="noopener noreferrer">Online-Terminbuchung</a></li></ul></div>
             </div>
             <div class="footer-bottom"><p>&copy; 2026 KeramiiKero. Alle Rechte vorbehalten.</p><div class="footer-legal-links"><a href="impressum.html">Impressum</a><a href="datenschutz.html">Datenschutz</a></div></div>`;
     }
@@ -91,92 +171,91 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // =========================================================================
-    // 2. Hero Decorations: Scroll Parallax + Mouse Parallax
+    // 2. Hero Decorations: continuous floating + smooth scroll/pointer parallax
     // =========================================================================
     const hero = document.querySelector('.hero, .subpage-hero');
     const decoItems = document.querySelectorAll('.hero-deco-item');
+    const heroMotion = {
+        clickEnergy: 0,
+        clickX: 0.5,
+        clickY: 0.5
+    };
 
     if (decoItems.length > 0 && hero) {
-        // Scroll-driven parallax
         if (!prefersReducedMotion) {
-            let ticking = false;
-
-            const updateParallax = () => {
-                const scroll = window.scrollY;
-                if (scroll < 1200) {
-                    decoItems.forEach(item => {
-                        const speed = parseFloat(item.dataset.speed || 0.08);
-                        const rotateFactor = parseFloat(item.dataset.rotate || 0.05);
-                        const driftFactor = parseFloat(item.dataset.drift || 0);
-
-                        const mouseX = parseFloat(item.style.getPropertyValue('--hero-mouse-x') || 0);
-                        const mouseY = parseFloat(item.style.getPropertyValue('--hero-mouse-y') || 0);
-
-                        const y = scroll * speed + mouseY;
-                        const x = scroll * driftFactor + mouseX;
-                        const r = scroll * rotateFactor;
-
-                        item.style.transform = `translate3d(${x}px, ${y}px, 0) rotate(${r}deg)`;
-                    });
-                }
-                ticking = false;
-            };
-
-            window.addEventListener('scroll', () => {
-                if (!ticking) {
-                    window.requestAnimationFrame(updateParallax);
-                    ticking = true;
-                }
-            }, { passive: true });
-
-            // Mouse parallax on hero
-            let mouseRAF = false;
             let targetMouseX = 0;
             let targetMouseY = 0;
             let currentMouseX = 0;
             let currentMouseY = 0;
+            let targetScroll = window.scrollY;
+            let currentScroll = targetScroll;
+            const mountedAt = performance.now();
 
-            hero.addEventListener('mousemove', (e) => {
+            window.addEventListener('scroll', () => {
+                targetScroll = window.scrollY;
+            }, { passive: true });
+
+            hero.addEventListener('pointermove', (e) => {
                 const rect = hero.getBoundingClientRect();
                 const cx = rect.left + rect.width / 2;
                 const cy = rect.top + rect.height / 2;
-                // Normalize -1 to 1
-                targetMouseX = (e.clientX - cx) / rect.width;
-                targetMouseY = (e.clientY - cy) / rect.height;
+                targetMouseX = ((e.clientX - cx) / rect.width) * 2;
+                targetMouseY = ((e.clientY - cy) / rect.height) * 2;
             });
 
-            hero.addEventListener('mouseleave', () => {
+            hero.addEventListener('pointerleave', () => {
                 targetMouseX = 0;
                 targetMouseY = 0;
             });
 
-            const animateMouse = () => {
-                // Lerp toward target
-                currentMouseX += (targetMouseX - currentMouseX) * 0.08;
-                currentMouseY += (targetMouseY - currentMouseY) * 0.08;
+            const animateDecorations = (time) => {
+                currentMouseX += (targetMouseX - currentMouseX) * 0.045;
+                currentMouseY += (targetMouseY - currentMouseY) * 0.045;
+                currentScroll += (targetScroll - currentScroll) * 0.075;
+                heroMotion.clickEnergy *= 0.94;
 
-                const scroll = window.scrollY;
-                if (scroll < 1200) {
-                    decoItems.forEach(item => {
+                const heroRect = hero.getBoundingClientRect();
+                const isNearViewport = heroRect.bottom > -180 && heroRect.top < window.innerHeight + 180;
+
+                if (isNearViewport) {
+                    const mountProgress = Math.min(1, (time - mountedAt) / 1100);
+                    const mountEase = 1 - Math.pow(1 - mountProgress, 3);
+
+                    decoItems.forEach((item, index) => {
                         const speed = parseFloat(item.dataset.speed || 0.08);
                         const rotateFactor = parseFloat(item.dataset.rotate || 0.05);
                         const driftFactor = parseFloat(item.dataset.drift || 0);
+                        const phase = index * 1.73;
+                        const direction = Math.sign(speed || 1);
+                        const idleX = Math.sin(time * 0.00042 + phase) * (5 + Math.abs(speed) * 28);
+                        const idleY = Math.cos(time * 0.00034 + phase * 0.82) * (6 + Math.abs(speed) * 34);
+                        const idleRotation = Math.sin(time * 0.00025 + phase) * 2.4;
+                        const pointerX = currentMouseX * (9 + Math.abs(speed) * 42) * direction;
+                        const pointerY = currentMouseY * (7 + Math.abs(speed) * 32) * direction;
+                        const itemRect = item.getBoundingClientRect();
+                        const itemX = (itemRect.left - heroRect.left + itemRect.width / 2) / Math.max(heroRect.width, 1);
+                        const itemY = (itemRect.top - heroRect.top + itemRect.height / 2) / Math.max(heroRect.height, 1);
+                        const clickDistance = Math.hypot(itemX - heroMotion.clickX, itemY - heroMotion.clickY);
+                        const clickFalloff = Math.max(0, 1 - clickDistance / 0.75);
+                        const clickWave = heroMotion.clickEnergy * clickFalloff * 22;
+                        const clickX = Math.sin(phase + heroMotion.clickX * 4) * clickWave;
+                        const clickY = Math.cos(phase + heroMotion.clickY * 4) * clickWave;
+                        const scrollY = currentScroll * speed;
+                        const scrollX = currentScroll * driftFactor;
+                        const entryY = (1 - mountEase) * 18;
+                        const scale = 0.92 + mountEase * 0.08;
+                        const x = scrollX + idleX + pointerX + clickX;
+                        const y = scrollY + idleY + pointerY + clickY + entryY;
+                        const rotation = currentScroll * rotateFactor + idleRotation + clickWave * 0.12 * direction;
 
-                        const mouseInfluenceX = currentMouseX * 12 * Math.abs(speed);
-                        const mouseInfluenceY = currentMouseY * 10 * Math.abs(speed);
-
-                        const y = scroll * speed + mouseInfluenceY;
-                        const x = scroll * driftFactor + mouseInfluenceX;
-                        const r = scroll * rotateFactor + currentMouseX * 3 * Math.sign(speed || 1);
-
-                        item.style.transform = `translate3d(${x}px, ${y}px, 0) rotate(${r}deg)`;
+                        item.style.transform = `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0) rotate(${rotation.toFixed(2)}deg) scale(${scale.toFixed(3)})`;
                     });
                 }
-                requestAnimationFrame(animateMouse);
+
+                requestAnimationFrame(animateDecorations);
             };
-            requestAnimationFrame(animateMouse);
+            requestAnimationFrame(animateDecorations);
         } else {
-            // Reduced motion: no parallax, but init once
             decoItems.forEach(item => {
                 item.style.transform = 'none';
             });
@@ -195,6 +274,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const rect = hero.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
+            heroMotion.clickEnergy = 1;
+            heroMotion.clickX = x / rect.width;
+            heroMotion.clickY = y / rect.height;
 
             const ripple = document.createElement('div');
             ripple.className = 'pond-ripple';
@@ -240,7 +322,192 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // =========================================================================
-    // 5. Interactive Kero Mascot
+    // 5. Offer-section decorations: reveal, idle float and section parallax
+    // =========================================================================
+    const previewsSection = document.querySelector('.previews-section');
+    const previewsDecoration = document.querySelector('.previews-decoration');
+
+    if (previewsSection && previewsDecoration) {
+        if ('IntersectionObserver' in window) {
+            const previewObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        previewsDecoration.classList.add('is-visible');
+                        observer.disconnect();
+                    }
+                });
+            }, { threshold: 0.12 });
+            previewObserver.observe(previewsSection);
+        } else {
+            previewsDecoration.classList.add('is-visible');
+        }
+
+        if (!prefersReducedMotion) {
+            let targetX = 0;
+            let targetY = 0;
+            let currentX = 0;
+            let currentY = 0;
+            let clickBoostX = 0;
+            let clickBoostY = 0;
+
+            const updatePreviewScrollTarget = () => {
+                const rect = previewsSection.getBoundingClientRect();
+                const distanceFromCenter = window.innerHeight / 2 - (rect.top + rect.height / 2);
+                targetY = Math.max(-28, Math.min(28, distanceFromCenter * 0.045));
+            };
+
+            window.addEventListener('scroll', updatePreviewScrollTarget, { passive: true });
+            updatePreviewScrollTarget();
+
+            previewsSection.addEventListener('pointermove', event => {
+                const rect = previewsSection.getBoundingClientRect();
+                targetX = ((event.clientX - rect.left) / rect.width - 0.5) * 14;
+            });
+
+            previewsSection.addEventListener('pointerleave', () => {
+                targetX = 0;
+            });
+
+            previewsSection.addEventListener('click', event => {
+                if (event.target.closest('a, button, input')) return;
+                const rect = previewsSection.getBoundingClientRect();
+                const x = event.clientX - rect.left;
+                const y = event.clientY - rect.top;
+                clickBoostX = (x / rect.width - 0.5) * 26;
+                clickBoostY = -14;
+
+                const ripple = document.createElement('span');
+                ripple.className = 'pond-ripple';
+                ripple.style.left = `${x}px`;
+                ripple.style.top = `${y}px`;
+                previewsSection.appendChild(ripple);
+                ripple.addEventListener('animationend', () => ripple.remove());
+            });
+
+            const animatePreviewDecorations = () => {
+                currentX += (targetX - currentX) * 0.045;
+                currentY += (targetY - currentY) * 0.055;
+                clickBoostX *= 0.93;
+                clickBoostY *= 0.93;
+                previewsDecoration.style.transform = `translate3d(${(currentX + clickBoostX).toFixed(2)}px, ${(currentY + clickBoostY).toFixed(2)}px, 0)`;
+                requestAnimationFrame(animatePreviewDecorations);
+            };
+            requestAnimationFrame(animatePreviewDecorations);
+        } else {
+            previewsDecoration.classList.add('is-visible');
+        }
+    }
+
+    // =========================================================================
+    // 6. Ambient decorations across the remaining page sections
+    // =========================================================================
+    const ambientSections = Array.from(document.querySelectorAll('.ambient-section'));
+    if (ambientSections.length) {
+        const ambientStates = ambientSections.map(section => ({
+            section,
+            layer: section.querySelector('.section-decoration'),
+            visible: false,
+            targetX: 0,
+            targetY: 0,
+            currentX: 0,
+            currentY: 0,
+            clickX: 0,
+            clickY: 0
+        }));
+
+        const revealAmbientSection = state => {
+            state.visible = true;
+            state.layer?.classList.add('is-visible');
+        };
+
+        if ('IntersectionObserver' in window) {
+            const ambientObserver = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    const state = ambientStates.find(item => item.section === entry.target);
+                    if (!state) return;
+                    state.visible = entry.isIntersecting;
+                    if (entry.isIntersecting) revealAmbientSection(state);
+                });
+            }, { rootMargin: '180px 0px', threshold: 0.02 });
+            ambientStates.forEach(state => ambientObserver.observe(state.section));
+        } else {
+            ambientStates.forEach(revealAmbientSection);
+        }
+
+        ambientStates.forEach(state => {
+            state.section.addEventListener('pointermove', event => {
+                if (prefersReducedMotion) return;
+                const rect = state.section.getBoundingClientRect();
+                state.targetX = ((event.clientX - rect.left) / Math.max(rect.width, 1) - 0.5) * 18;
+            });
+            state.section.addEventListener('pointerleave', () => {
+                state.targetX = 0;
+            });
+            state.section.addEventListener('click', event => {
+                if (prefersReducedMotion || event.target.closest('a, button, input, textarea, select, iframe')) return;
+                const rect = state.section.getBoundingClientRect();
+                const x = event.clientX - rect.left;
+                const y = event.clientY - rect.top;
+                state.clickX = (x / Math.max(rect.width, 1) - 0.5) * 30;
+                state.clickY = -16;
+                const ripple = document.createElement('span');
+                ripple.className = 'pond-ripple ambient-ripple';
+                ripple.style.left = `${x}px`;
+                ripple.style.top = `${y}px`;
+                state.section.appendChild(ripple);
+                ripple.addEventListener('animationend', () => ripple.remove());
+            });
+        });
+
+        if (!prefersReducedMotion) {
+            const updateAmbientMotion = () => {
+                ambientStates.forEach(state => {
+                    if (!state.visible || !state.layer) return;
+                    const rect = state.section.getBoundingClientRect();
+                    const centerDistance = window.innerHeight / 2 - (rect.top + rect.height / 2);
+                    state.targetY = Math.max(-34, Math.min(34, centerDistance * 0.035));
+                    state.currentX += (state.targetX - state.currentX) * 0.045;
+                    state.currentY += (state.targetY - state.currentY) * 0.05;
+                    state.clickX *= 0.93;
+                    state.clickY *= 0.93;
+                    state.layer.style.transform = `translate3d(${(state.currentX + state.clickX).toFixed(2)}px, ${(state.currentY + state.clickY).toFixed(2)}px, 0)`;
+                });
+                requestAnimationFrame(updateAmbientMotion);
+            };
+            requestAnimationFrame(updateAmbientMotion);
+        } else {
+            ambientStates.forEach(revealAmbientSection);
+        }
+    }
+
+    const galleryItems = document.querySelectorAll('.gallery-loop-item');
+    if (galleryItems.length) {
+        const galleryLoop = document.querySelector('.gallery-loop');
+        galleryLoop?.addEventListener('pointerdown', () => {
+            galleryLoop.style.animationPlayState = 'paused';
+        });
+        const lightbox = document.createElement('dialog');
+        lightbox.className = 'gallery-lightbox';
+        lightbox.innerHTML = `<button class="gallery-lightbox-close" type="button" aria-label="Bild schließen">×</button><img src="" alt="">`;
+        document.body.appendChild(lightbox);
+        const lightboxImage = lightbox.querySelector('img');
+        const closeLightbox = () => lightbox.close();
+        lightbox.querySelector('.gallery-lightbox-close').addEventListener('click', closeLightbox);
+        lightbox.addEventListener('close', () => {
+            if (galleryLoop) galleryLoop.style.animationPlayState = '';
+        });
+        lightbox.addEventListener('click', event => { if (event.target === lightbox) closeLightbox(); });
+        galleryItems.forEach(item => item.addEventListener('click', () => {
+            const image = item.querySelector('img');
+            if (!image) return;
+            lightboxImage.src = image.currentSrc || image.src;
+            lightboxImage.alt = image.alt || 'KeramiiKero Galerie';
+            lightbox.showModal();
+        }));
+    }
+
+    // =========================================================================
+    // 7. Interactive Kero Mascot
     // =========================================================================
     const mascot = document.querySelector('.mascot-container');
     if (mascot) {
@@ -254,7 +521,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let quakIdx = 0;
         const bubble = mascot.querySelector('.speech-bubble');
 
-        mascot.addEventListener('click', () => {
+        const makeKeroSpeak = () => {
             if (bubble) {
                 bubble.textContent = quaks[quakIdx % quaks.length];
                 quakIdx++;
@@ -264,6 +531,14 @@ document.addEventListener('DOMContentLoaded', () => {
             bubbleTimeout = setTimeout(() => {
                 mascot.classList.remove('show-speech');
             }, 2400);
+        };
+
+        mascot.addEventListener('click', makeKeroSpeak);
+        mascot.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                makeKeroSpeak();
+            }
         });
     }
 
@@ -314,12 +589,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const subtitle = card.querySelector('p');
             const price = card.querySelector('.pricing-price');
             const badge = card.querySelector('.pricing-badge');
+            const previewImage = card.querySelector('.pricing-preview-image');
             if (!title || !price) return;
 
             const panelId = `${prefix}-panel-${index + 1}`;
             const header = document.createElement('button');
             header.type = 'button';
             header.className = headerClass;
+            if (previewImage) header.classList.add('has-preview-image');
             header.setAttribute('aria-expanded', 'false');
             header.setAttribute('aria-controls', panelId);
 
@@ -345,8 +622,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const icon = document.createElement('span');
             icon.className = 'offer-toggle-icon';
             icon.setAttribute('aria-hidden', 'true');
-            icon.textContent = '+';
             right.append(priceLabel, icon);
+            if (previewImage) header.append(previewImage);
             header.append(left, right);
 
             title.remove();
@@ -486,30 +763,50 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // =========================================================================
-    // 12. Map Click-to-Load (Kontakt page)
+    // 12. Map app chooser (Kontakt page)
     // =========================================================================
-    const mapPlaceholder = document.querySelector('.map-placeholder');
-    const mapLoadBtn = document.querySelector('.map-load-btn');
-    const mapIframeWrap = document.querySelector('.map-iframe-wrap');
+    const mapAppDialog = document.querySelector('.map-app-dialog');
+    const mapChoiceTriggers = document.querySelectorAll('.map-choice-trigger');
+    const mapDialogClose = document.querySelector('.map-dialog-close');
+    const mapCopyAddress = document.querySelector('.map-copy-address');
+    const mapCopyStatus = document.querySelector('.map-copy-status');
+    const studioAddress = 'Kobel 7, 83135 Schechen';
 
-    const loadMap = () => {
-        if (!mapIframeWrap) return;
-        // Create iframe dynamically to avoid auto-loading tracking
-        const iframe = document.createElement('iframe');
-        iframe.src = 'https://www.google.com/maps?q=Kobel%207%2C%2083135%20Schechen&output=embed';
-        iframe.title = 'Karte: KeramiiKero Schechen';
-        iframe.loading = 'lazy';
-        iframe.allowFullscreen = true;
-        iframe.setAttribute('aria-label', 'Kartenansicht des KeramiiKero Studios in Schechen');
-        mapIframeWrap.appendChild(iframe);
-        mapIframeWrap.classList.add('loaded');
-        if (mapPlaceholder) mapPlaceholder.style.display = 'none';
+    const openMapChoices = () => {
+        if (!mapAppDialog) return;
+        if (typeof mapAppDialog.showModal === 'function') {
+            if (!mapAppDialog.open) mapAppDialog.showModal();
+        } else {
+            mapAppDialog.setAttribute('open', '');
+        }
     };
 
-    if (mapLoadBtn) mapLoadBtn.addEventListener('click', loadMap);
-    if (mapPlaceholder) {
-        mapPlaceholder.addEventListener('click', (event) => {
-            if (!event.target.closest('button')) loadMap();
+    const closeMapChoices = () => {
+        if (!mapAppDialog) return;
+        if (typeof mapAppDialog.close === 'function' && mapAppDialog.open) {
+            mapAppDialog.close();
+        } else {
+            mapAppDialog.removeAttribute('open');
+        }
+    };
+
+    mapChoiceTriggers.forEach(trigger => trigger.addEventListener('click', openMapChoices));
+    if (mapDialogClose) mapDialogClose.addEventListener('click', closeMapChoices);
+
+    if (mapAppDialog) {
+        mapAppDialog.addEventListener('click', (event) => {
+            if (event.target === mapAppDialog) closeMapChoices();
+        });
+    }
+
+    if (mapCopyAddress) {
+        mapCopyAddress.addEventListener('click', async () => {
+            try {
+                await navigator.clipboard.writeText(studioAddress);
+                if (mapCopyStatus) mapCopyStatus.textContent = 'Adresse wurde kopiert.';
+            } catch {
+                if (mapCopyStatus) mapCopyStatus.textContent = studioAddress;
+            }
         });
     }
 });

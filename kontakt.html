@@ -101,12 +101,7 @@
                         <a href="https://www.etermin.net/keramiikero" target="_blank" rel="noopener noreferrer" class="btn-primary">
                             Jetzt Termin buchen
                         </a>
-                        <a href="https://www.google.com/maps/search/?api=1&amp;query=Kobel+7%2C+83135+Schechen" target="_blank" rel="noopener noreferrer" class="btn-secondary">
-                            Google Maps
-                        </a>
-                        <a href="https://maps.apple.com/?q=KeramiiKero&amp;address=Kobel+7%2C+83135+Schechen" target="_blank" rel="noopener noreferrer" class="btn-secondary">
-                            Apple Karten
-                        </a>
+                        <button type="button" class="btn-secondary map-choice-trigger">Route in Maps öffnen</button>
                     </div>
                 </div>
 
@@ -117,15 +112,34 @@
 
             <section class="map-section" aria-labelledby="map-title">
                 <div class="map-container">
-                    <div class="map-placeholder">
-                        <svg class="map-placeholder-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"></path><circle cx="12" cy="10" r="2.5"></circle></svg>
-                        <h3 id="map-title">Karte anzeigen</h3>
-                        <p>Die Karte von Google wird erst nach deiner Zustimmung geladen. Dabei können Daten an Google übertragen werden.</p>
-                        <button class="map-load-btn" type="button">Karte einmalig laden</button>
+                    <h2 id="map-title" class="sr-only">Standort von KeramiiKero in Schechen</h2>
+                    <div class="map-iframe-wrap loaded">
+                        <iframe src="https://www.google.com/maps?q=Kobel%207%2C%2083135%20Schechen&amp;output=embed" title="Karte: KeramiiKero Schechen" loading="lazy" allowfullscreen aria-label="Kartenansicht des KeramiiKero Studios in Schechen"></iframe>
+                        <button type="button" class="map-choice-trigger map-overlay-choice">Route in Maps öffnen</button>
                     </div>
-                    <div class="map-iframe-wrap"></div>
                 </div>
             </section>
+
+            <dialog class="map-app-dialog" id="map-app-dialog" aria-labelledby="map-app-title">
+                <div class="map-app-dialog-inner">
+                    <button type="button" class="map-dialog-close" aria-label="Auswahl schließen">×</button>
+                    <span class="map-dialog-icon" aria-hidden="true">📍</span>
+                    <h2 id="map-app-title">Wo möchtest du die Route öffnen?</h2>
+                    <p>Kobel 7, 83135 Schechen</p>
+                    <div class="map-app-options">
+                        <a href="https://www.google.com/maps/dir/?api=1&amp;destination=Kobel+7%2C+83135+Schechen" target="_blank" rel="noopener noreferrer">
+                            <span aria-hidden="true">🗺️</span><strong>Google Maps</strong><small>Route direkt in Maps öffnen</small>
+                        </a>
+                        <a href="https://maps.apple.com/?daddr=Kobel+7%2C+83135+Schechen&amp;dirflg=d" target="_blank" rel="noopener noreferrer">
+                            <span aria-hidden="true"></span><strong>Apple Karten</strong><small>Route direkt in Karten öffnen</small>
+                        </a>
+                    </div>
+                    <div class="map-dialog-tools">
+                        <button type="button" class="map-copy-address">Adresse kopieren</button>
+                    </div>
+                    <p class="map-copy-status" role="status" aria-live="polite"></p>
+                </div>
+            </dialog>
 
             <!-- FAQ Section -->
             <div id="faq" style="text-align: center; max-width: 700px; margin: 80px auto 30px;">
