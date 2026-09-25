@@ -110,6 +110,63 @@
                 </div>
             </div>
 
+            <section class="direct-contact-box" id="direkt-kontakt" aria-labelledby="direct-contact-title">
+                <form class="direct-contact-form" id="direct-contact-form">
+                    <div class="direct-contact-form-heading">
+                    <span class="section-tag">Direkter Kontakt</span>
+                    <h2 id="direct-contact-title">Schreib uns direkt</h2>
+                    <p>Wähle E-Mail oder WhatsApp und verfasse deine Nachricht gleich hier.</p>
+                    </div>
+                    <fieldset class="contact-channel-picker">
+                        <legend>Wie dürfen wir dir antworten?</legend>
+                        <label class="contact-channel-option">
+                            <input type="radio" name="contact-channel" value="email" checked>
+                            <span>✉️ E-Mail</span>
+                        </label>
+                        <label class="contact-channel-option">
+                            <input type="radio" name="contact-channel" value="whatsapp">
+                            <span>💬 WhatsApp</span>
+                        </label>
+                    </fieldset>
+
+                    <div class="contact-form-row">
+                        <label>
+                            <span>Dein Name</span>
+                            <input type="text" name="contact-name" autocomplete="name" required placeholder="Vor- und Nachname">
+                        </label>
+                        <label>
+                            <span>Worum geht es?</span>
+                            <select name="contact-topic">
+                                <option>Angebot & Preise</option>
+                                <option>Keramik bemalen</option>
+                                <option>Töpferkurs</option>
+                                <option>Geburtstag oder Feier</option>
+                                <option>Sonstige Frage</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <label class="contact-identity-field contact-email-field">
+                        <span>Deine E-Mail-Adresse</span>
+                        <input type="email" name="contact-email" autocomplete="email" required placeholder="name@beispiel.de">
+                    </label>
+
+                    <label class="contact-identity-field contact-phone-field" hidden>
+                        <span>Deine Telefonnummer</span>
+                        <input type="tel" name="contact-phone" autocomplete="tel" placeholder="z. B. 0176 12345678">
+                    </label>
+
+                    <label class="contact-message-field">
+                        <span>Deine Nachricht</span>
+                        <textarea name="contact-message" rows="5" required placeholder="Wie können wir dir helfen?"></textarea>
+                    </label>
+
+                    <button type="submit" class="btn-primary contact-submit">Nachricht direkt senden</button>
+                    <p class="contact-send-note">Deine Anfrage wird direkt an KeramiiKero gesendet. Wenn du WhatsApp auswählst, antworten wir dir an die angegebene Telefonnummer.</p>
+                    <p class="contact-form-status" role="status" aria-live="polite"></p>
+                </form>
+            </section>
+
             <section class="map-section" aria-labelledby="map-title">
                 <div class="map-container">
                     <h2 id="map-title" class="sr-only">Standort von KeramiiKero in Schechen</h2>

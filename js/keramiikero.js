@@ -579,7 +579,130 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Upgrade existing offer cards into compact, accessible accordions.
+    // Pricing carousel: touch swipe on mobile, side arrows on larger screens.
+    const pricingMedia = window.matchMedia('(max-width: 700px)');
+    document.querySelectorAll('.pricing-grid').forEach((grid, gridIndex) => {
+        const cards = [...grid.querySelectorAll(':scope > .pricing-card')];
+        if (!cards.length) return;
+
+        grid.classList.add('mobile-pricing-carousel');
+        const shell = document.createElement('div');
+        shell.className = 'pricing-carousel-shell';
+        grid.before(shell);
+        const controls = document.createElement('div');
+        controls.className = 'pricing-carousel-controls';
+        controls.innerHTML = `
+            <button type="button" class="pricing-carousel-arrow pricing-carousel-prev" aria-label="Vorheriges Angebot">←</button>
+            <span class="pricing-carousel-status" aria-live="polite"></span>
+            <span class="pricing-swipe-hint" aria-hidden="true">↔ Wischen</span>
+            <button type="button" class="pricing-carousel-arrow pricing-carousel-next" aria-label="Nächstes Angebot">→</button>
+        `;
+        shell.append(controls, grid);
+
+        cards.forEach((card, cardIndex) => {
+            const title = card.querySelector('h3');
+            const price = card.querySelector('.pricing-price');
+            if (!price) return;
+
+            const details = document.createElement('div');
+            details.className = 'pricing-card-details';
+            details.id = `pricing-details-${gridIndex + 1}-${cardIndex + 1}`;
+            let nextElement = price.nextElementSibling;
+            while (nextElement) {
+                const followingElement = nextElement.nextElementSibling;
+                details.appendChild(nextElement);
+                nextElement = followingElement;
+            }
+
+            const inquiry = document.createElement('a');
+            inquiry.className = 'btn-secondary pricing-inquiry-btn';
+            inquiry.href = 'kontakt.html#direkt-kontakt';
+            inquiry.textContent = 'Anfragen';
+            details.appendChild(inquiry);
+
+            const toggle = document.createElement('button');
+            toggle.type = 'button';
+            toggle.className = 'pricing-card-toggle';
+            toggle.setAttribute('aria-expanded', 'false');
+            toggle.setAttribute('aria-controls', details.id);
+            toggle.innerHTML = '<span>Details anzeigen</span><span class="pricing-card-chevron" aria-hidden="true"></span>';
+            price.after(toggle, details);
+
+            toggle.addEventListener('click', () => {
+                const expanded = card.classList.toggle('is-expanded');
+                toggle.setAttribute('aria-expanded', String(expanded));
+                toggle.querySelector('span').textContent = expanded ? 'Details schließen' : 'Details anzeigen';
+                details.setAttribute('aria-hidden', String(!expanded));
+                details.inert = !expanded;
+            });
+
+            card.dataset.cardTitle = title?.textContent.trim() || `Angebot ${cardIndex + 1}`;
+        });
+
+        let currentCard = 0;
+        const status = controls.querySelector('.pricing-carousel-status');
+        const updateCarousel = (collapseCards = true) => {
+            const isMobile = pricingMedia.matches;
+            cards.forEach((card, index) => {
+                const active = index === currentCard;
+                card.classList.toggle('is-active', !isMobile || active);
+                card.setAttribute('aria-hidden', String(isMobile && !active));
+                const toggle = card.querySelector('.pricing-card-toggle');
+                const details = card.querySelector('.pricing-card-details');
+                if (isMobile && collapseCards) {
+                    card.classList.remove('is-expanded');
+                    toggle?.setAttribute('aria-expanded', 'false');
+                    if (toggle) toggle.querySelector('span').textContent = 'Details anzeigen';
+                    details?.setAttribute('aria-hidden', 'true');
+                    if (details) details.inert = true;
+                } else if (!isMobile) {
+                    details?.setAttribute('aria-hidden', 'false');
+                    if (details) details.inert = false;
+                }
+            });
+            if (status) status.textContent = `${currentCard + 1} / ${cards.length}`;
+        };
+
+        controls.querySelector('.pricing-carousel-prev').addEventListener('click', () => {
+            currentCard = (currentCard - 1 + cards.length) % cards.length;
+            updateCarousel();
+        });
+        controls.querySelector('.pricing-carousel-next').addEventListener('click', () => {
+            currentCard = (currentCard + 1) % cards.length;
+            updateCarousel();
+        });
+
+        let pointerStartX = null;
+        grid.addEventListener('pointerdown', event => {
+            if (!pricingMedia.matches) return;
+            pointerStartX = event.clientX;
+            grid.setPointerCapture?.(event.pointerId);
+        });
+        grid.addEventListener('pointerup', event => {
+            if (pointerStartX === null || !pricingMedia.matches) return;
+            const deltaX = event.clientX - pointerStartX;
+            pointerStartX = null;
+            if (Math.abs(deltaX) < 45) return;
+            currentCard = deltaX < 0
+                ? (currentCard + 1) % cards.length
+                : (currentCard - 1 + cards.length) % cards.length;
+            updateCarousel();
+        });
+        grid.addEventListener('pointercancel', () => { pointerStartX = null; });
+
+        pricingMedia.addEventListener('change', () => updateCarousel(pricingMedia.matches));
+        updateCarousel();
+    });
+
+    // Re-apply deep links after the page layout and enhancements are ready.
+    if (window.location.hash) {
+        const hashTarget = document.getElementById(window.location.hash.slice(1));
+        if (hashTarget) {
+            window.setTimeout(() => hashTarget.scrollIntoView({ block: 'start' }), 350);
+        }
+    }
+
+    // Legacy accordion builder retained for older page variants.
     const upgradePricingCards = (listClass, itemClass, headerClass, bodyClass, bodyInnerClass, prefix) => {
         const grid = document.querySelector('.pricing-grid');
         if (!grid) return;
@@ -643,9 +766,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    const pageFile = window.location.pathname.split('/').pop() || 'index.html';
-    if (pageFile === 'angebote-preise.html') upgradePricingCards('offer-accordion-list', 'offer-accordion', 'offer-accordion-header', 'offer-body', 'offer-body-inner', 'offer');
-    if (pageFile === 'toepferwerkstatt.html') upgradePricingCards('toepfer-accordion-list', 'toepfer-accordion', 'toepfer-accordion-header', 'toepfer-body', 'toepfer-body-inner', 'toepfer');
+    // Pricing cards remain fully visible on offers and pottery pages.
+    // The accordion upgrader is intentionally not initialized.
 
     // =========================================================================
     // 8. Offer Accordions (Angebote & Preise)
@@ -704,13 +826,20 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('.step-carousel .carousel-btn-next')?.addEventListener('click', () => goTo(idx + 1));
         dots.forEach((dot, i) => dot.addEventListener('click', () => goTo(i)));
 
-        // Touch/swipe support
-        let touchStartX = 0;
-        stepCarousel.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
-        stepCarousel.addEventListener('touchend', e => {
-            const delta = e.changedTouches[0].clientX - touchStartX;
+        // Pointer swipe support for touchscreens.
+        let pointerStartX = null;
+        stepCarousel.addEventListener('pointerdown', e => {
+            if (!window.matchMedia('(max-width: 700px)').matches) return;
+            pointerStartX = e.clientX;
+            stepCarousel.setPointerCapture?.(e.pointerId);
+        });
+        stepCarousel.addEventListener('pointerup', e => {
+            if (pointerStartX === null) return;
+            const delta = e.clientX - pointerStartX;
+            pointerStartX = null;
             if (Math.abs(delta) > 40) goTo(delta < 0 ? idx + 1 : idx - 1);
-        }, { passive: true });
+        });
+        stepCarousel.addEventListener('pointercancel', () => { pointerStartX = null; });
 
         // Keyboard
         stepCarousel.addEventListener('keydown', e => {
@@ -746,13 +875,20 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('.tech-carousel .carousel-btn-next')?.addEventListener('click', () => goTo(idx + 1));
         dots.forEach((dot, i) => dot.addEventListener('click', () => goTo(i)));
 
-        // Touch/swipe support
-        let touchStartX = 0;
-        techCarousel.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
-        techCarousel.addEventListener('touchend', e => {
-            const delta = e.changedTouches[0].clientX - touchStartX;
+        // Pointer swipe support for touchscreens.
+        let pointerStartX = null;
+        techCarousel.addEventListener('pointerdown', e => {
+            if (!window.matchMedia('(max-width: 700px)').matches) return;
+            pointerStartX = e.clientX;
+            techCarousel.setPointerCapture?.(e.pointerId);
+        });
+        techCarousel.addEventListener('pointerup', e => {
+            if (pointerStartX === null) return;
+            const delta = e.clientX - pointerStartX;
+            pointerStartX = null;
             if (Math.abs(delta) > 40) goTo(delta < 0 ? idx + 1 : idx - 1);
-        }, { passive: true });
+        });
+        techCarousel.addEventListener('pointercancel', () => { pointerStartX = null; });
 
         techCarousel.addEventListener('keydown', e => {
             if (e.key === 'ArrowRight') goTo(idx + 1);
@@ -779,6 +915,8 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             mapAppDialog.setAttribute('open', '');
         }
+        mapAppDialog.scrollTop = 0;
+        window.setTimeout(() => mapDialogClose?.focus(), 0);
     };
 
     const closeMapChoices = () => {
@@ -806,6 +944,90 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (mapCopyStatus) mapCopyStatus.textContent = 'Adresse wurde kopiert.';
             } catch {
                 if (mapCopyStatus) mapCopyStatus.textContent = studioAddress;
+            }
+        });
+    }
+
+    // =========================================================================
+    // 13. Direct contact composer (Kontakt page)
+    // =========================================================================
+    const directContactForm = document.querySelector('.direct-contact-form');
+    if (directContactForm) {
+        const channelInputs = directContactForm.querySelectorAll('input[name="contact-channel"]');
+        const submitButton = directContactForm.querySelector('.contact-submit');
+        const emailField = directContactForm.querySelector('.contact-email-field');
+        const phoneField = directContactForm.querySelector('.contact-phone-field');
+        const emailInput = directContactForm.elements['contact-email'];
+        const phoneInput = directContactForm.elements['contact-phone'];
+        const formStatus = directContactForm.querySelector('.contact-form-status');
+
+        const updateContactChannel = () => {
+            const channel = directContactForm.elements['contact-channel'].value;
+            const usesWhatsApp = channel === 'whatsapp';
+            directContactForm.classList.toggle('is-whatsapp', usesWhatsApp);
+            submitButton.textContent = 'Nachricht direkt senden';
+            emailField.hidden = usesWhatsApp;
+            phoneField.hidden = !usesWhatsApp;
+            emailInput.disabled = usesWhatsApp;
+            emailInput.required = !usesWhatsApp;
+            phoneInput.disabled = !usesWhatsApp;
+            phoneInput.required = usesWhatsApp;
+        };
+
+        channelInputs.forEach(input => input.addEventListener('change', updateContactChannel));
+        updateContactChannel();
+
+        directContactForm.addEventListener('submit', async event => {
+            event.preventDefault();
+            if (!directContactForm.reportValidity()) return;
+
+            const formData = new FormData(directContactForm);
+            const channel = formData.get('contact-channel');
+            const name = formData.get('contact-name').trim();
+            const topic = formData.get('contact-topic');
+            const message = formData.get('contact-message').trim();
+            const sender = channel === 'whatsapp'
+                ? `Telefonnummer: ${formData.get('contact-phone').trim()}`
+                : `E-Mail-Adresse: ${formData.get('contact-email').trim()}`;
+            const responseChannel = channel === 'whatsapp' ? 'WhatsApp' : 'E-Mail';
+            const endpoint = 'https://formsubmit.co/ajax/info@keramiikero.de';
+            const payload = {
+                _subject: `KeramiiKero-Anfrage: ${topic}`,
+                _captcha: 'false',
+                _template: 'table',
+                Name: name,
+                Antwortweg: responseChannel,
+                Absender: sender.replace(/^.*?:\s*/, ''),
+                Thema: topic,
+                Nachricht: message
+            };
+            if (channel === 'email') payload.email = formData.get('contact-email').trim();
+
+            submitButton.disabled = true;
+            submitButton.textContent = 'Wird gesendet …';
+            formStatus.textContent = '';
+            formStatus.classList.remove('is-error');
+
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) throw new Error('Die Nachricht konnte nicht gesendet werden.');
+
+                directContactForm.reset();
+                updateContactChannel();
+                formStatus.textContent = 'Danke! Deine Nachricht wurde direkt an uns gesendet.';
+            } catch {
+                formStatus.textContent = 'Das Senden hat leider nicht funktioniert. Bitte versuche es später erneut.';
+                formStatus.classList.add('is-error');
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Nachricht direkt senden';
             }
         });
     }
