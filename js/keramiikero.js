@@ -1043,13 +1043,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     },
                     body: JSON.stringify(payload)
                 });
-                if (!response.ok) throw new Error('Die Nachricht konnte nicht gesendet werden.');
+                const result = await response.json().catch(() => ({}));
+                const accepted = response.ok && result.success !== false && result.success !== 'false';
+                if (!accepted) {
+                    throw new Error(result.message || 'Die Nachricht konnte nicht gesendet werden.');
+                }
 
                 directContactForm.reset();
                 updateContactChannel();
                 formStatus.textContent = 'Danke! Deine Nachricht wurde direkt an uns gesendet.';
-            } catch {
-                formStatus.textContent = 'Das Senden hat leider nicht funktioniert. Bitte versuche es später erneut.';
+            } catch (error) {
+                const serviceMessage = error instanceof Error ? error.message : '';
+                formStatus.textContent = serviceMessage
+                    ? `Das Senden hat nicht funktioniert: ${serviceMessage}`
+                    : 'Das Senden hat leider nicht funktioniert. Bitte versuche es später erneut.';
                 formStatus.classList.add('is-error');
             } finally {
                 submitButton.disabled = false;
