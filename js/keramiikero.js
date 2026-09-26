@@ -960,18 +960,25 @@ document.addEventListener('DOMContentLoaded', () => {
         const emailInput = directContactForm.elements['contact-email'];
         const phoneInput = directContactForm.elements['contact-phone'];
         const formStatus = directContactForm.querySelector('.contact-form-status');
+        const sendNote = directContactForm.querySelector('.contact-send-note');
+        const whatsappNumber = '4915141379173';
 
         const updateContactChannel = () => {
             const channel = directContactForm.elements['contact-channel'].value;
             const usesWhatsApp = channel === 'whatsapp';
             directContactForm.classList.toggle('is-whatsapp', usesWhatsApp);
-            submitButton.textContent = 'Nachricht direkt senden';
+            submitButton.textContent = usesWhatsApp ? 'In WhatsApp öffnen' : 'E-Mail direkt senden';
             emailField.hidden = usesWhatsApp;
             phoneField.hidden = !usesWhatsApp;
             emailInput.disabled = usesWhatsApp;
             emailInput.required = !usesWhatsApp;
             phoneInput.disabled = !usesWhatsApp;
             phoneInput.required = usesWhatsApp;
+            if (sendNote) {
+                sendNote.textContent = usesWhatsApp
+                    ? 'Deine fertige Nachricht wird in WhatsApp an +49 1514 1379173 geöffnet. Dort musst du nur noch auf „Senden“ tippen.'
+                    : 'Deine Nachricht wird per E-Mail direkt an info@keramiikero.de gesendet.';
+            }
         };
 
         channelInputs.forEach(input => input.addEventListener('change', updateContactChannel));
@@ -990,6 +997,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 ? `Telefonnummer: ${formData.get('contact-phone').trim()}`
                 : `E-Mail-Adresse: ${formData.get('contact-email').trim()}`;
             const responseChannel = channel === 'whatsapp' ? 'WhatsApp' : 'E-Mail';
+
+            if (channel === 'whatsapp') {
+                const whatsappMessage = [
+                    'Hallo KeramiiKero,',
+                    '',
+                    `Name: ${name}`,
+                    `Telefonnummer: ${formData.get('contact-phone').trim()}`,
+                    `Thema: ${topic}`,
+                    '',
+                    message
+                ].join('\n');
+                const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
+                const whatsappWindow = window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+                if (!whatsappWindow) window.location.href = whatsappUrl;
+                formStatus.textContent = 'WhatsApp wurde mit deiner Nachricht geöffnet. Bitte tippe dort noch auf „Senden“.';
+                formStatus.classList.remove('is-error');
+                return;
+            }
+
             const endpoint = 'https://formsubmit.co/ajax/info@keramiikero.de';
             const payload = {
                 _subject: `KeramiiKero-Anfrage: ${topic}`,
@@ -1027,7 +1053,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 formStatus.classList.add('is-error');
             } finally {
                 submitButton.disabled = false;
-                submitButton.textContent = 'Nachricht direkt senden';
+                updateContactChannel();
             }
         });
     }

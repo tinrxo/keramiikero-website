@@ -3,10 +3,10 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <meta name="description" content="Kontakt & Anfahrt zu KeramiiKero in Schechen. Öffnungszeiten, Anfahrtsbeschreibung ab Rosenheim & Kolbermoor sowie häufig gestellte Fragen (FAQ).">
     <title>Kontakt, Anfahrt & FAQ | KeramiiKero</title>
-    <link rel="stylesheet" href="css/keramiikero.css">
+    <link rel="stylesheet" href="css/keramiikero.css?v=20260926-3">
     <link rel="icon" href="images/kero-logo-final.webp" type="image/webp">
 </head>
 
@@ -113,19 +113,18 @@
             <section class="direct-contact-box" id="direkt-kontakt" aria-labelledby="direct-contact-title">
                 <form class="direct-contact-form" id="direct-contact-form">
                     <div class="direct-contact-form-heading">
-                    <span class="section-tag">Direkter Kontakt</span>
+                    <span class="section-tag contact-section-tag">Direkter Kontakt</span>
                     <h2 id="direct-contact-title">Schreib uns direkt</h2>
-                    <p>Wähle E-Mail oder WhatsApp und verfasse deine Nachricht gleich hier.</p>
                     </div>
                     <fieldset class="contact-channel-picker">
                         <legend>Wie dürfen wir dir antworten?</legend>
                         <label class="contact-channel-option">
                             <input type="radio" name="contact-channel" value="email" checked>
-                            <span>✉️ E-Mail</span>
+                            <span>E-Mail</span>
                         </label>
                         <label class="contact-channel-option">
                             <input type="radio" name="contact-channel" value="whatsapp">
-                            <span>💬 WhatsApp</span>
+                            <span>WhatsApp</span>
                         </label>
                     </fieldset>
 
@@ -161,8 +160,8 @@
                         <textarea name="contact-message" rows="5" required placeholder="Wie können wir dir helfen?"></textarea>
                     </label>
 
-                    <button type="submit" class="btn-primary contact-submit">Nachricht direkt senden</button>
-                    <p class="contact-send-note">Deine Anfrage wird direkt an KeramiiKero gesendet. Wenn du WhatsApp auswählst, antworten wir dir an die angegebene Telefonnummer.</p>
+                    <button type="submit" class="btn-primary contact-submit">E-Mail direkt senden</button>
+                    <p class="contact-send-note">Deine Nachricht wird per E-Mail direkt an info@keramiikero.de gesendet.</p>
                     <p class="contact-form-status" role="status" aria-live="polite"></p>
                 </form>
             </section>
@@ -360,7 +359,7 @@
         </div>
     </footer>
 
-    <script src="js/keramiikero.js"></script>
+    <script src="js/keramiikero.js?v=20260926-3"></script>
 </body>
 
 </html>
