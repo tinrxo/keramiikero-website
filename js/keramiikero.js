@@ -1,6 +1,25 @@
 document.addEventListener('DOMContentLoaded', () => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+    const siteHeader = document.querySelector('header');
+    const noticeHost = document.querySelector('.hero, .subpage-hero');
+    const isLandingPage = /(?:^|\/)index\.html$/.test(location.pathname) || location.pathname.endsWith('/');
+    if (siteHeader && noticeHost?.classList.contains('hero') && isLandingPage && !document.querySelector('.service-alert')) {
+        const noticeMarkup = `
+            <aside class="service-alert" role="status">
+                <strong>Wichtiger Hinweis:</strong> Unsere Festnetznummer ist derzeit nicht erreichbar. Kontakt ist aktuell nur per
+                <a href="mailto:info@keramiikero.de">E-Mail</a>,
+                <a href="https://wa.me/4915141379173" target="_blank" rel="noopener noreferrer">WhatsApp</a> oder
+                <a href="https://www.instagram.com/keramiikero" target="_blank" rel="noopener noreferrer">Instagram</a> möglich.
+                Wir arbeiten daran, das Problem so schnell wie möglich zu lösen.
+            </aside>`;
+        if (noticeHost) {
+            noticeHost.classList.add('has-service-alert');
+            noticeHost.insertAdjacentHTML('afterbegin', noticeMarkup);
+        }
+        else siteHeader.insertAdjacentHTML('afterend', noticeMarkup);
+    }
+
     // Galerie and Kreativmarkt throwback share one destination on every page.
     document.querySelectorAll('.nav-links, .mobile-menu').forEach(menu => {
         if (menu.querySelector('a[href="galerie.html"]')) return;
@@ -111,11 +130,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         <a href="mailto:info@keramiikero.de" class="social-icon-btn" aria-label="E-Mail an KeramiiKero"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="3"></rect><path d="m3 6 9 7 9-7"></path></svg></a>
                     </div>
                 </div>
-                <div class="footer-col"><h4>Seiten</h4><ul><li><a href="index.html">Home</a></li><li><a href="angebote-preise.html">Angebote & Preise</a></li><li><a href="ablauf-techniken.html">Ablauf & Techniken</a></li><li><a href="toepferwerkstatt.html">Töpferwerkstatt</a></li><li><a href="workshops-events.html">Workshops & Events</a></li><li><a href="kuenstler-shop.html">Künstler-Shop</a></li><li><a href="galerie.html">Galerie</a></li></ul></div>
-                <div class="footer-col"><h4>Öffnungszeiten</h4><ul><li><strong>Mi – Fr:</strong> 14:00 – 18:00 Uhr</li><li><strong>Sa & So:</strong> 10:00 – 17:00 Uhr</li><li><em>Wochenende: ohne Termin möglich</em></li><li><strong>Töpferwerkstatt:</strong> 24/7 per Nuki Zugang</li></ul></div>
-                <div class="footer-col"><h4>Kontakt & Info</h4><ul><li><a href="kontakt.html">Anfahrt & Studio</a></li><li><a href="kontakt.html#faq">Häufige Fragen (FAQ)</a></li><li><a href="https://www.etermin.net/keramiikero" target="_blank" rel="noopener noreferrer">Online-Terminbuchung</a></li></ul></div>
+                <div class="footer-col footer-pages"><h4>Seiten</h4><ul class="footer-pages-list"><li><a href="index.html">Home</a></li><li><a href="angebote-preise.html">Angebote & Preise</a></li><li><a href="ablauf-techniken.html">Ablauf & Techniken</a></li><li><a href="toepferwerkstatt.html">Töpferwerkstatt</a></li><li><a href="workshops-events.html">Workshops & Events</a></li><li><a href="kuenstler-shop.html">Künstler-Shop</a></li><li><a href="galerie.html">Galerie</a></li></ul></div>
+                <div class="footer-col footer-hours"><h4>Öffnungszeiten</h4><ul><li><strong>Kurszeiten</strong></li><li><strong>Do:</strong> 18:00 – 21:00 Uhr <em>(nur mit Termin)</em></li><li><strong>Fr:</strong> 14:00 – 21:00 Uhr <em>(nur mit Termin)</em></li><li><strong>Sa – So:</strong> 10:00 – 21:00 Uhr <em>(ab 18:00 Uhr nur mit Termin)</em></li><li class="footer-hours-separator"><strong>Abholzeiten</strong></li><li><strong>Sa – So:</strong> 10:00 – 17:00 Uhr</li><li class="footer-hours-note"><strong>Außerhalb unserer Abholzeiten sind wir nur da, wenn ein Kurs gebucht ist!</strong></li></ul></div>
+                <div class="footer-col footer-contact"><h4>Kontakt & Info</h4><address><strong>KeramiiKero</strong><br>Kobel 7, 83135 Schechen<br>Tel.: 08039 9091754<br><a href="mailto:info@keramiikero.de">E-Mail: info@keramiikero.de</a><br><a href="https://wa.me/4915141379173" target="_blank" rel="noopener noreferrer">Mobil/WhatsApp: +49 1514 1379173</a></address><ul><li><a href="kontakt.html">Anfahrt & direkt schreiben</a></li><li><a href="https://www.etermin.net/keramiikero" target="_blank" rel="noopener noreferrer">Online-Terminbuchung</a></li></ul></div>
             </div>
-            <div class="footer-bottom"><p>&copy; 2026 KeramiiKero. Alle Rechte vorbehalten.</p><div class="footer-legal-links"><a href="impressum.html">Impressum</a><a href="datenschutz.html">Datenschutz</a></div></div>`;
+            <div class="footer-bottom"><p>&copy; 2026 KeramiiKero. Alle Rechte vorbehalten.</p><div class="footer-legal-links"><a href="impressum.html">Impressum</a><a href="datenschutz.html">Datenschutz</a><a href="agb.html">AGB</a></div></div>`;
     }
 
     // =========================================================================
@@ -594,7 +613,6 @@ document.addEventListener('DOMContentLoaded', () => {
         controls.innerHTML = `
             <button type="button" class="pricing-carousel-arrow pricing-carousel-prev" aria-label="Vorheriges Angebot">←</button>
             <span class="pricing-carousel-status" aria-live="polite"></span>
-            <span class="pricing-swipe-hint" aria-hidden="true">↔ Wischen</span>
             <button type="button" class="pricing-carousel-arrow pricing-carousel-next" aria-label="Nächstes Angebot">→</button>
         `;
         shell.append(controls, grid);
@@ -613,12 +631,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 details.appendChild(nextElement);
                 nextElement = followingElement;
             }
-
-            const inquiry = document.createElement('a');
-            inquiry.className = 'btn-secondary pricing-inquiry-btn';
-            inquiry.href = 'kontakt.html#direkt-kontakt';
-            inquiry.textContent = 'Anfragen';
-            details.appendChild(inquiry);
 
             const toggle = document.createElement('button');
             toggle.type = 'button';
@@ -646,7 +658,7 @@ document.addEventListener('DOMContentLoaded', () => {
             cards.forEach((card, index) => {
                 const active = index === currentCard;
                 card.classList.toggle('is-active', !isMobile || active);
-                card.setAttribute('aria-hidden', String(isMobile && !active));
+                card.removeAttribute('aria-hidden');
                 const toggle = card.querySelector('.pricing-card-toggle');
                 const details = card.querySelector('.pricing-card-details');
                 if (isMobile && collapseCards) {
@@ -663,35 +675,51 @@ document.addEventListener('DOMContentLoaded', () => {
             if (status) status.textContent = `${currentCard + 1} / ${cards.length}`;
         };
 
-        controls.querySelector('.pricing-carousel-prev').addEventListener('click', () => {
-            currentCard = (currentCard - 1 + cards.length) % cards.length;
+        const scrollToCard = (index, behavior = 'smooth') => {
+            currentCard = (index + cards.length) % cards.length;
             updateCarousel();
+            if (!pricingMedia.matches) return;
+            const card = cards[currentCard];
+            const left = card.offsetLeft - (grid.clientWidth - card.offsetWidth) / 2;
+            grid.scrollTo({ left, behavior });
+        };
+
+        controls.querySelector('.pricing-carousel-prev').addEventListener('click', () => {
+            scrollToCard(currentCard - 1);
         });
         controls.querySelector('.pricing-carousel-next').addEventListener('click', () => {
-            currentCard = (currentCard + 1) % cards.length;
-            updateCarousel();
+            scrollToCard(currentCard + 1);
         });
 
-        let pointerStartX = null;
-        grid.addEventListener('pointerdown', event => {
-            if (!pricingMedia.matches) return;
-            pointerStartX = event.clientX;
-            grid.setPointerCapture?.(event.pointerId);
+        let scrollFrame = 0;
+        grid.addEventListener('scroll', () => {
+            if (!pricingMedia.matches || scrollFrame) return;
+            scrollFrame = window.requestAnimationFrame(() => {
+                scrollFrame = 0;
+                const center = grid.scrollLeft + grid.clientWidth / 2;
+                let nearestIndex = 0;
+                let nearestDistance = Infinity;
+                cards.forEach((card, index) => {
+                    const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+                    const distance = Math.abs(cardCenter - center);
+                    if (distance < nearestDistance) {
+                        nearestDistance = distance;
+                        nearestIndex = index;
+                    }
+                });
+                if (nearestIndex !== currentCard) {
+                    currentCard = nearestIndex;
+                    updateCarousel();
+                }
+            });
         });
-        grid.addEventListener('pointerup', event => {
-            if (pointerStartX === null || !pricingMedia.matches) return;
-            const deltaX = event.clientX - pointerStartX;
-            pointerStartX = null;
-            if (Math.abs(deltaX) < 45) return;
-            currentCard = deltaX < 0
-                ? (currentCard + 1) % cards.length
-                : (currentCard - 1 + cards.length) % cards.length;
-            updateCarousel();
-        });
-        grid.addEventListener('pointercancel', () => { pointerStartX = null; });
 
-        pricingMedia.addEventListener('change', () => updateCarousel(pricingMedia.matches));
+        pricingMedia.addEventListener('change', event => {
+            updateCarousel(event.matches);
+            if (event.matches) window.requestAnimationFrame(() => scrollToCard(currentCard, 'auto'));
+        });
         updateCarousel();
+        if (pricingMedia.matches) window.requestAnimationFrame(() => scrollToCard(0, 'auto'));
     });
 
     // Re-apply deep links after the page layout and enhancements are ready.
@@ -802,101 +830,96 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // =========================================================================
-    // 10. Step Carousel (Ablauf page)
+    // 10–11. Ablauf & Technik carousels
+    // Native scroll-snap on small screens, side arrows on desktop/fine pointers.
     // =========================================================================
-    const stepCarousel = document.querySelector('.step-carousel');
-    if (stepCarousel) {
-        const inner = stepCarousel.querySelector('.step-carousel-inner');
-        const slides = stepCarousel.querySelectorAll('.step-carousel-slide');
-        const dots = document.querySelectorAll('.step-carousel .carousel-dot');
+    // This page intentionally keeps the same swipe/peek presentation at every width.
+    const contentCarouselMedia = window.matchMedia('(min-width: 0px)');
+    const setupContentCarousel = (rootSelector, innerSelector, slideSelector) => {
+        const root = document.querySelector(rootSelector);
+        if (!root) return;
+        const inner = root.querySelector(innerSelector);
+        const slides = [...root.querySelectorAll(slideSelector)];
+        const dots = [...root.querySelectorAll('.carousel-dot')];
+        const nav = root.querySelector('.carousel-nav');
+        if (!inner || !slides.length || !nav) return;
+
+        const status = document.createElement('span');
+        status.className = 'responsive-carousel-status';
+        status.setAttribute('aria-live', 'polite');
+        nav.insertBefore(status, nav.querySelector('.carousel-btn-next'));
+
         let idx = 0;
+        let scrollFrame = 0;
         const total = slides.length;
 
-        const goTo = (n) => {
-            idx = (n + total) % total;
-            inner.style.transform = `translateX(-${idx * 100}%)`;
-            dots.forEach((d, i) => {
-                d.classList.toggle('active', i === idx);
-                d.setAttribute('aria-current', i === idx ? 'true' : 'false');
+        const updateState = () => {
+            const compact = contentCarouselMedia.matches;
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === idx);
+                dot.setAttribute('aria-current', index === idx ? 'true' : 'false');
             });
-            slides.forEach((slide, i) => slide.setAttribute('aria-hidden', String(i !== idx)));
+            slides.forEach((slide, index) => {
+                slide.classList.toggle('is-active', index === idx);
+                if (compact) slide.removeAttribute('aria-hidden');
+                else slide.setAttribute('aria-hidden', String(index !== idx));
+            });
+            status.textContent = `${idx + 1} / ${total}`;
         };
 
-        document.querySelector('.step-carousel .carousel-btn-prev')?.addEventListener('click', () => goTo(idx - 1));
-        document.querySelector('.step-carousel .carousel-btn-next')?.addEventListener('click', () => goTo(idx + 1));
-        dots.forEach((dot, i) => dot.addEventListener('click', () => goTo(i)));
-
-        // Pointer swipe support for touchscreens.
-        let pointerStartX = null;
-        stepCarousel.addEventListener('pointerdown', e => {
-            if (!window.matchMedia('(max-width: 700px)').matches) return;
-            pointerStartX = e.clientX;
-            stepCarousel.setPointerCapture?.(e.pointerId);
-        });
-        stepCarousel.addEventListener('pointerup', e => {
-            if (pointerStartX === null) return;
-            const delta = e.clientX - pointerStartX;
-            pointerStartX = null;
-            if (Math.abs(delta) > 40) goTo(delta < 0 ? idx + 1 : idx - 1);
-        });
-        stepCarousel.addEventListener('pointercancel', () => { pointerStartX = null; });
-
-        // Keyboard
-        stepCarousel.addEventListener('keydown', e => {
-            if (e.key === 'ArrowRight') goTo(idx + 1);
-            if (e.key === 'ArrowLeft') goTo(idx - 1);
-        });
-
-        goTo(0);
-    }
-
-    // =========================================================================
-    // 11. Technique Carousel (Ablauf & Techniken page)
-    // =========================================================================
-    const techCarousel = document.querySelector('.tech-carousel');
-    if (techCarousel) {
-        const inner = techCarousel.querySelector('.tech-carousel-inner');
-        const slides = techCarousel.querySelectorAll('.tech-carousel-slide');
-        const dots = document.querySelectorAll('.tech-carousel .carousel-dot');
-        let idx = 0;
-        const total = slides.length;
-
-        const goTo = (n) => {
-            idx = (n + total) % total;
-            inner.style.transform = `translateX(-${idx * 100}%)`;
-            dots.forEach((d, i) => {
-                d.classList.toggle('active', i === idx);
-                d.setAttribute('aria-current', i === idx ? 'true' : 'false');
-            });
-            slides.forEach((slide, i) => slide.setAttribute('aria-hidden', String(i !== idx)));
+        const goTo = (nextIndex, behavior = 'smooth') => {
+            idx = (nextIndex + total) % total;
+            updateState();
+            if (contentCarouselMedia.matches) {
+                inner.style.transform = 'none';
+                const slide = slides[idx];
+                const left = slide.offsetLeft - (inner.clientWidth - slide.offsetWidth) / 2;
+                inner.scrollTo({ left, behavior });
+            } else {
+                inner.style.transform = `translateX(-${idx * 100}%)`;
+            }
         };
 
-        document.querySelector('.tech-carousel .carousel-btn-prev')?.addEventListener('click', () => goTo(idx - 1));
-        document.querySelector('.tech-carousel .carousel-btn-next')?.addEventListener('click', () => goTo(idx + 1));
-        dots.forEach((dot, i) => dot.addEventListener('click', () => goTo(i)));
+        root.querySelector('.carousel-btn-prev')?.addEventListener('click', () => goTo(idx - 1));
+        root.querySelector('.carousel-btn-next')?.addEventListener('click', () => goTo(idx + 1));
+        dots.forEach((dot, index) => dot.addEventListener('click', () => goTo(index)));
 
-        // Pointer swipe support for touchscreens.
-        let pointerStartX = null;
-        techCarousel.addEventListener('pointerdown', e => {
-            if (!window.matchMedia('(max-width: 700px)').matches) return;
-            pointerStartX = e.clientX;
-            techCarousel.setPointerCapture?.(e.pointerId);
+        inner.addEventListener('scroll', () => {
+            if (!contentCarouselMedia.matches || scrollFrame) return;
+            scrollFrame = window.requestAnimationFrame(() => {
+                scrollFrame = 0;
+                const center = inner.scrollLeft + inner.clientWidth / 2;
+                let nearestIndex = 0;
+                let nearestDistance = Infinity;
+                slides.forEach((slide, index) => {
+                    const distance = Math.abs(slide.offsetLeft + slide.offsetWidth / 2 - center);
+                    if (distance < nearestDistance) {
+                        nearestDistance = distance;
+                        nearestIndex = index;
+                    }
+                });
+                if (nearestIndex !== idx) {
+                    idx = nearestIndex;
+                    updateState();
+                }
+            });
         });
-        techCarousel.addEventListener('pointerup', e => {
-            if (pointerStartX === null) return;
-            const delta = e.clientX - pointerStartX;
-            pointerStartX = null;
-            if (Math.abs(delta) > 40) goTo(delta < 0 ? idx + 1 : idx - 1);
-        });
-        techCarousel.addEventListener('pointercancel', () => { pointerStartX = null; });
 
-        techCarousel.addEventListener('keydown', e => {
-            if (e.key === 'ArrowRight') goTo(idx + 1);
-            if (e.key === 'ArrowLeft') goTo(idx - 1);
+        root.addEventListener('keydown', event => {
+            if (event.key === 'ArrowRight') goTo(idx + 1);
+            if (event.key === 'ArrowLeft') goTo(idx - 1);
         });
 
-        goTo(0);
-    }
+        contentCarouselMedia.addEventListener('change', event => {
+            if (!event.matches) inner.scrollLeft = 0;
+            window.requestAnimationFrame(() => goTo(idx, 'auto'));
+        });
+
+        window.requestAnimationFrame(() => goTo(0, 'auto'));
+    };
+
+    setupContentCarousel('.step-carousel', '.step-carousel-inner', '.step-carousel-slide');
+    setupContentCarousel('.tech-carousel', '.tech-carousel-inner', '.tech-carousel-slide');
 
     // =========================================================================
     // 12. Map app chooser (Kontakt page)
